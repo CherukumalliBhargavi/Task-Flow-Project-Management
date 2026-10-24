@@ -1,0 +1,206 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#6c5ce7">
+  <title>TaskFlow | Project Management</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#">
+        <span class="brand-icon">✦</span>
+        <span>TaskFlow<small>WORKSPACE</small></span>
+      </a>
+
+      <button class="workspace" id="workspaceBtn">
+        <span class="workspace-icon">T</span>
+        <span>Team Workspace<small>Free plan</small></span>
+        <span>⌄</span>
+      </button>
+
+      <p class="nav-label">WORKSPACE</p>
+      <nav class="navigation">
+        <button class="nav-link active" data-view="overview">▦ <span>Overview</span></button>
+        <button class="nav-link" data-view="projects">▣ <span>My Projects</span><span class="nav-count" id="projectCount">0</span></button>
+        <button class="nav-link" data-view="tasks">☑ <span>All Tasks</span></button>
+        <button class="nav-link" data-view="calendar">▦ <span>Deadlines</span></button>
+      </nav>
+
+      <div class="sidebar-heading">
+        <p class="nav-label">YOUR PROJECTS</p>
+        <button id="sidebarAddProject" title="Add project">＋</button>
+      </div>
+      <div id="projectNav" class="project-nav"></div>
+
+      <div class="sidebar-bottom">
+        <div class="upgrade-card">
+          <span>✦</span>
+          <h4>Make work flow</h4>
+          <p>Organize your ideas and get things done.</p>
+          <button id="quickStartBtn">Create a task ↗</button>
+        </div>
+        <div class="profile">
+          <div class="avatar">U</div>
+          <div class="profile-info"><strong id="profileName">Workspace User</strong><small>Personal workspace</small></div>
+          <button id="editProfileBtn" title="Edit profile">⋯</button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="icon-button menu-button" id="menuBtn" aria-label="Toggle sidebar">☰</button>
+        <div class="breadcrumbs">Workspace <span>/</span> <strong id="breadcrumb">Overview</strong></div>
+        <div class="top-actions">
+          <label class="global-search">⌕ <input id="globalSearch" placeholder="Search tasks and projects..." aria-label="Search"></label>
+          <button class="icon-button notification-button" id="notificationBtn" title="Notifications">♧<span id="notificationDot"></span></button>
+          <button class="avatar small-avatar" id="topProfileBtn" title="Edit profile">U</button>
+        </div>
+      </header>
+
+      <div class="content">
+        <section class="welcome-row">
+          <div>
+            <p class="eyebrow" id="todayLabel">YOUR WORKSPACE</p>
+            <h1 id="pageTitle">Good things start here <span>✦</span></h1>
+            <p class="muted" id="pageSubtitle">Plan smart, work together, and make progress every day.</p>
+          </div>
+          <button class="primary-button" id="addTaskBtn">＋ Create new task</button>
+        </section>
+
+        <section class="stats-grid" id="statsGrid">
+          <article class="stat-card purple">
+            <div class="stat-top"><span>Total tasks</span><span class="stat-icon">☑</span></div>
+            <h2 id="totalTasks">0</h2><p>Tasks in your workspace</p>
+          </article>
+          <article class="stat-card blue">
+            <div class="stat-top"><span>In progress</span><span class="stat-icon">◷</span></div>
+            <h2 id="progressTasks">0</h2><p>Currently being worked on</p>
+          </article>
+          <article class="stat-card green">
+            <div class="stat-top"><span>Completed</span><span class="stat-icon">✓</span></div>
+            <h2 id="completedTasks">0</h2><p>Tasks completed successfully</p>
+          </article>
+          <article class="stat-card orange">
+            <div class="stat-top"><span>Overdue</span><span class="stat-icon">!</span></div>
+            <h2 id="overdueTasks">0</h2><p>Tasks past their deadline</p>
+          </article>
+        </section>
+
+        <section class="overview-grid" id="overviewPanel">
+          <article class="panel projects-panel">
+            <div class="panel-heading">
+              <div><h2>Project overview</h2><p class="muted">Your team's active projects</p></div>
+              <button class="text-button" data-go="projects">View all →</button>
+            </div>
+            <div id="projectCards" class="project-cards"></div>
+            <div id="emptyProjects" class="empty-state hidden">
+              <span>✦</span><h3>Start your first project</h3>
+              <p>Bring your plans together in one place.</p>
+              <button class="primary-button" id="firstProjectBtn">＋ Create project</button>
+            </div>
+          </article>
+
+          <article class="panel progress-panel">
+            <div class="panel-heading"><div><h2>Productivity</h2><p class="muted">Your completion rate</p></div><span class="pill">All time</span></div>
+            <div class="progress-ring" id="progressRing"><div><strong id="completionRate">0%</strong><small>completed</small></div></div>
+            <div class="legend"><span><i class="legend-dot purple-dot"></i>Completed</span><strong id="ringCompleted">0</strong></div>
+            <div class="legend"><span><i class="legend-dot grey-dot"></i>Remaining</span><strong id="ringRemaining">0</strong></div>
+          </article>
+        </section>
+
+        <section class="panel task-panel" id="taskPanel">
+          <div class="panel-heading task-heading">
+            <div><h2 id="taskSectionTitle">Recent tasks</h2><p class="muted">Keep your work moving forward.</p></div>
+            <button class="secondary-button" id="exportBtn">↓ Export CSV</button>
+          </div>
+          <div class="filters">
+            <label class="filter-search">⌕ <input id="taskSearch" placeholder="Search tasks..." aria-label="Search tasks"></label>
+            <select id="statusFilter" aria-label="Filter by status">
+              <option value="all">All statuses</option>
+              <option value="todo">To do</option>
+              <option value="progress">In progress</option>
+              <option value="done">Completed</option>
+            </select>
+            <select id="priorityFilter" aria-label="Filter by priority">
+              <option value="all">All priorities</option>
+              <option value="high">High priority</option>
+              <option value="medium">Medium priority</option>
+              <option value="low">Low priority</option>
+            </select>
+            <button class="secondary-button" id="clearFiltersBtn">Clear filters</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Task</th><th>Project</th><th>Priority</th><th>Deadline</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="taskTable"></tbody>
+            </table>
+          </div>
+          <div id="emptyTasks" class="empty-state hidden"><span>☑</span><h3>Nothing on your list yet</h3><p>Create a task to start organizing your work.</p><button class="primary-button" id="emptyAddTask">＋ Create task</button></div>
+        </section>
+
+        <section class="panel calendar-panel hidden" id="calendarPanel">
+          <div class="panel-heading"><div><h2>Deadline planner</h2><p class="muted">Tasks organized by due date</p></div><button class="primary-button" id="calendarAddBtn">＋ Add task</button></div>
+          <div id="deadlineList"></div>
+        </section>
+
+        <footer>© <span id="year"></span> TaskFlow · Make teamwork feel effortless.</footer>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-backdrop hidden" id="taskModal">
+    <form class="modal" id="taskForm">
+      <div class="modal-heading"><div><p class="eyebrow">WORK MANAGEMENT</p><h2 id="taskModalTitle">Create a task</h2></div><button type="button" class="close-button" data-close="taskModal">×</button></div>
+      <input type="hidden" id="taskId">
+      <label>Task title <input id="taskTitle" required maxlength="120" placeholder="e.g. Design the landing page"></label>
+      <label>Description <textarea id="taskDescription" rows="3" maxlength="1000" placeholder="What needs to be done?"></textarea></label>
+      <div class="form-grid">
+        <label>Project <select id="taskProject"></select></label>
+        <label>Assigned to <input id="taskAssignee" maxlength="60" placeholder="Team member"></label>
+        <label>Priority <select id="taskPriority"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select></label>
+        <label>Status <select id="taskStatus"><option value="todo">To do</option><option value="progress">In progress</option><option value="done">Completed</option></select></label>
+        <label class="full-width">Deadline <input id="taskDeadline" type="date"></label>
+      </div>
+      <label>Comments <textarea id="taskComments" rows="2" maxlength="1000" placeholder="Add a note or comment..."></textarea></label>
+      <div class="modal-actions"><button type="button" class="secondary-button" data-close="taskModal">Cancel</button><button type="submit" class="primary-button">Save task</button></div>
+    </form>
+  </div>
+
+  <div class="modal-backdrop hidden" id="projectModal">
+    <form class="modal" id="projectForm">
+      <div class="modal-heading"><div><p class="eyebrow">PLAN SOMETHING GREAT</p><h2 id="projectModalTitle">Create a project</h2></div><button type="button" class="close-button" data-close="projectModal">×</button></div>
+      <input type="hidden" id="projectId">
+      <label>Project name <input id="projectName" required maxlength="80" placeholder="e.g. Website redesign"></label>
+      <label>Description <textarea id="projectDescription" rows="3" maxlength="500" placeholder="What is this project about?"></textarea></label>
+      <div class="form-grid">
+        <label>Project color <select id="projectColor"><option value="purple">Violet</option><option value="blue">Ocean blue</option><option value="green">Mint green</option><option value="orange">Sunset orange</option><option value="pink">Pink</option></select></label>
+        <label>Target date <input id="projectDeadline" type="date"></label>
+      </div>
+      <div class="modal-actions"><button type="button" class="secondary-button" data-close="projectModal">Cancel</button><button type="submit" class="primary-button">Save project</button></div>
+    </form>
+  </div>
+
+  <div class="modal-backdrop hidden" id="profileModal">
+    <form class="modal compact-modal" id="profileForm">
+      <div class="modal-heading"><h2>Your profile</h2><button type="button" class="close-button" data-close="profileModal">×</button></div>
+      <label>Display name <input id="displayName" required maxlength="60"></label>
+      <div class="modal-actions"><button type="button" class="secondary-button" data-close="profileModal">Cancel</button><button class="primary-button" type="submit">Save profile</button></div>
+    </form>
+  </div>
+
+  <div class="notification-popover hidden" id="notificationPanel">
+    <div class="panel-heading"><h3>Notifications</h3><button id="closeNotifications" class="close-button">×</button></div>
+    <div id="notificationList"></div>
+  </div>
+
+  <div id="toast" class="toast" role="status"></div>
+  <script src="/script.js" defer></script>
+</body>
+</html>
